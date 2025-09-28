@@ -1,2 +1,2 @@
-# AdvancedProgramming-Lab
-Archivos de mi clase de programación avanzada
+# Algoritmos practicos de todo tipo
+Archivos realizados en clases diversas de programación para el resguardo y facil acceso de estos mismos
