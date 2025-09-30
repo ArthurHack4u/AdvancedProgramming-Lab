@@ -1,7 +1,7 @@
 # Concurrencia y Exclusión Mutua en Java: Monitores y Semáforos
 Este repositorio contiene una explicación detallada y ejemplos prácticos sobre cómo manejar la concurrencia en Java utilizando dos mecanismos de exclusión mutua: semáforos y monitores. El objetivo es demostrar cómo prevenir condiciones de carrera y asegurar la integridad de los datos en aplicaciones multihilo.
 
-## Introducción al Problema de la Condición de Carrera
+# Introducción al Problema de la Condición de Carrera
 Una condición de carrera (race condition) es uno de los problemas más fundamentales y peligrosos en la programación concurrente. Ocurre cuando dos o más hilos de ejecución acceden a un recurso compartido (como una variable, un archivo o un objeto) de manera simultánea, y al menos uno de ellos modifica dicho recurso. El resultado final de la operación depende del orden, a menudo impredecible, en que los hilos son planificados por el sistema operativo para acceder al recurso.
 
 Imaginemos una analogía simple: una cuenta bancaria compartida con un saldo de $1000. Dos personas (hilos) intentan retirar dinero al mismo tiempo.
@@ -52,3 +52,10 @@ Hace que el hilo actual libere el cerrojo y entre en un estado de espera.
 Despiertan a uno (notify) o a todos (notifyAll) los hilos que están esperando en el cerrojo de ese objeto.
 
 Los monitores son una solución más segura y estructurada que los semáforos, ya que la exclusión mutua es automática y el programador no tiene que preocuparse por adquirir y liberar los cerrojos manualmente, reduciendo el riesgo de errores como el olvido de liberar un semáforo.
+
+# Conclusion
+La exclusión mutua no es una opción, sino un requisito fundamental para garantizar la consistencia y fiabilidad de los datos en entornos multihilo.
+
+Los semáforos son una herramienta de sincronización potente y flexible. Son ideales para escenarios donde se necesita controlar el acceso a un número finito de recursos compartidos, como limitar el número de hilos que ejecutan una tarea costosa simultáneamente. Sin embargo, su uso incorrecto (por ejemplo, olvidar liberar un permiso) puede conducir a interbloqueos (deadlocks) difíciles de depurar.
+
+Los monitores, implementados en Java a través del mecanismo synchronized, ofrecen un nivel de abstracción superior. Al encapsular el estado compartido y la lógica de sincronización dentro de un mismo objeto, reducen drásticamente la probabilidad de errores. Son la opción preferida para proteger la integridad de un objeto y coordinar interacciones complejas entre hilos, como en el patrón productor-consumidor.
