@@ -37,6 +37,8 @@ Su contador solo puede tomar los valores 0 o 1. Se usa para garantizar la exclus
 #### Semáforo de Conteo: 
 Su contador puede tomar cualquier valor no negativo. Se utiliza para controlar el acceso a un número limitado de recursos (N). Por ejemplo, si tenemos una piscina con 3 carriles de nado disponibles, un semáforo inicializado en 3 permitiría que hasta 3 nadadores (hilos) entren a la vez.
 
+![Resultados en Semaforo](ConcurrenciaSemaforo.png)
+
 ## Monitores
 Un monitor es una construcción de más alto nivel que un semáforo, diseñada para simplificar la programación concurrente. Un monitor es un objeto o módulo que encapsula tanto los datos compartidos como los procedimientos que operan sobre esos datos. Su característica principal es que garantiza que solo un hilo puede estar activo dentro del monitor en un momento dado.
 
@@ -52,6 +54,8 @@ Hace que el hilo actual libere el cerrojo y entre en un estado de espera.
 Despiertan a uno (notify) o a todos (notifyAll) los hilos que están esperando en el cerrojo de ese objeto.
 
 Los monitores son una solución más segura y estructurada que los semáforos, ya que la exclusión mutua es automática y el programador no tiene que preocuparse por adquirir y liberar los cerrojos manualmente, reduciendo el riesgo de errores como el olvido de liberar un semáforo.
+
+![Resultados Monitor](ConcurrenciaMonitor.png)
 
 # Conclusion
 La exclusión mutua no es una opción, sino un requisito fundamental para garantizar la consistencia y fiabilidad de los datos en entornos multihilo.
