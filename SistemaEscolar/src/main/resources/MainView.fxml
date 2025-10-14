@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+<!-- 
+    VENTANA PRINCIPAL (MainView.fxml)
+    Este es el contenedor principal de la aplicación.
+    Usa un BorderPane para tener una barra de menú arriba y un
+    panel de pestañas en el centro para navegar entre las secciones.
+-->
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="Archivo">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Cerrar" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Ayuda">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Acerca de" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <!-- El TabPane permite tener todas las vistas en una sola ventana -->
+      <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="Personas">
+               <!-- Aquí se carga la vista de Personas -->
+               <content>
+                  <fx:include source="PersonasView.fxml" />
+               </content>
+          </Tab>
+          <Tab text="Materias">
+               <!-- Aquí se carga la vista de Materias -->
+              <content>
+                  <fx:include source="MateriasView.fxml" />
+              </content>
+          </Tab>
+          <Tab text="Inscripciones">
+              <!-- Aquí se carga la vista de Inscripciones -->
+              <content>
+                  <fx:include source="InscripcionesView.fxml" />
+              </content>
+          </Tab>
+           <Tab text="Asistencias">
+          <content>
+            <fx:include source="AsistenciasView.fxml" />
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </center>
+</BorderPane>
+
