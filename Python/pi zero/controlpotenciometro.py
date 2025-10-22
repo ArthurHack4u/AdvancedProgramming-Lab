@@ -29,7 +29,7 @@ def read_potentiometer():
     GPIO.setup(POT_PIN, GPIO.IN)
     while GPIO.input(POT_PIN) == GPIO.LOW:
         count += 1
-        if count > 50000: # Timeout reducido para 5K
+        if count > 20000: # Timeout reducido para 5K
             break
             
     return count
