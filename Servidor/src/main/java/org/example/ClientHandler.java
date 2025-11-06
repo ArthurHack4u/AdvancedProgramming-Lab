@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.util.List;
 
 public class ClientHandler implements Runnable {
-
     private Socket clientSocket;
     private DataInputStream input;
     private DataOutputStream output;
@@ -21,9 +20,13 @@ public class ClientHandler implements Runnable {
 
         // nombre de usuario temporal
         this.username = "User-" + (clients.size() + 1);
+        sendMessage("Conectado! Eres: " + this.username);
 
-        sendMessage("¡Conectado! Eres: " + this.username);
-        sendMessage("Comandos disponibles: /nick <nuevo_nombre> | /pm <usuario> <mensaje>");
+        // Mensaje de ayuda /list
+        sendMessage("Comandos disponibles: /nick <nuevo_nombre> | /pm <usuario> <mensaje> | /list");
+    
+        System.out.println("[CONEXIÓN] " + this.username + " se ha unido. Total: " + clients.size() + " usuarios.");
+        
         broadcastMessage(this.username + " se ha unido al chat.", this);
     }
 
@@ -32,27 +35,37 @@ public class ClientHandler implements Runnable {
         try {
             while (true) {
                 String mensajeCliente = input.readUTF();
-
                 if (mensajeCliente.startsWith("/nick ")) {
                     // cambiar user
                     changeUserName(mensajeCliente);
-
                 } else if (mensajeCliente.startsWith("/pm ")) {
                     // mensaje privado
                     sendPrivateMessage(mensajeCliente);
+                } else if (mensajeCliente.equals("/list")) {
 
+                    // Enviar lista de usuarios
+                    sendUserList();
                 } else if ("salir".equalsIgnoreCase(mensajeCliente)) {
                     break;
-
                 } else {
-                    // mensaje global
-                    broadcastMessage(this.username + ": " + mensajeCliente, null);
+                // mensaje global
+                
+                    String fullMessage = this.username + ": " + mensajeCliente;
+                    // Calcula a cuántos les llegará
+                    int recipientCount = clients.size();
+                    System.out.println("[GLOBAL] " + fullMessage + " (Enviado a " + recipientCount + " usuarios)");
+                    
+                    broadcastMessage(fullMessage, null);
                 }
             }
+
         } catch (IOException e) {
             System.out.println(this.username + " se ha desconectado.");
         } finally {
             clients.remove(this);
+            
+            System.out.println("[DESCONEXIÓN] " + this.username + " ha salido. Quedan: " + clients.size() + " usuarios.");
+            
             broadcastMessage(this.username + " ha salido del chat.", this);
             try {
                 clientSocket.close();
@@ -63,7 +76,6 @@ public class ClientHandler implements Runnable {
     }
 
     private void changeUserName(String command) throws IOException {
-        // Extrae el nuevo nombre del comando (ej: "/nick Arturo" -> "Arturo")
         String newNick = command.substring(6).trim();
         if (newNick.isEmpty()) {
             sendMessage("Error: El nombre no puede estar vacío.");
@@ -72,15 +84,15 @@ public class ClientHandler implements Runnable {
 
         String oldNick = this.username;
         this.username = newNick;
-
+        
+        System.out.println("[NICK] " + oldNick + " ahora es " + this.username);
+        
         sendMessage("Tu nombre ha sido cambiado a: " + this.username);
         broadcastMessage(oldNick + " ahora es conocido como " + this.username, this);
     }
 
     private void sendPrivateMessage(String command) throws IOException {
-        // Divide el comando: /pm <usuario> <mensaje>
         String[] parts = command.split(" ", 3);
-
         if (parts.length < 3) {
             sendMessage("Error: Uso incorrecto. /pm <usuario> <mensaje>");
             return;
@@ -88,17 +100,15 @@ public class ClientHandler implements Runnable {
 
         String targetUser = parts[1];
         String message = parts[2];
-
-        // Buscar al usuario en la lista de clientes
         for (ClientHandler client : clients) {
             if (client.username.equals(targetUser)) {
-                // Encontrado: enviar mensaje privado
                 client.sendMessage("(Privado) " + this.username + ": " + message);
-                sendMessage("(Mensaje enviado a " + targetUser + "): " + message); // Confirmación
+                sendMessage("(Mensaje enviado a " + targetUser + "): " + message);
+                
+                System.out.println("[PRIVADO] " + this.username + " -> " + targetUser + ": " + message);
                 return;
             }
         }
-
         sendMessage("Error: Usuario '" + targetUser + "' no encontrado.");
     }
 
@@ -109,13 +119,27 @@ public class ClientHandler implements Runnable {
                     client.sendMessage(message);
                 } catch (IOException e) {
                     e.printStackTrace();
+
                 }
             }
         }
     }
 
-     // envia mensaje solo a este cliente
     public void sendMessage(String message) throws IOException {
         output.writeUTF(message);
+    }
+
+    // Recopila todos los nombres de usuario conectados y se los envía en un mensaje privado a este cliente.
+    private void sendUserList() throws IOException {
+
+        System.out.println("[INFO] Enviando lista de usuarios a: " + this.username);
+        
+        StringBuilder userList = new StringBuilder();
+        userList.append("--- Usuarios Conectados (" + clients.size() + ") ---\n");
+        for (ClientHandler client : clients) {
+            userList.append(" * " + client.username + "\n");
+        }
+        userList.append("-----------------------------------");
+        sendMessage(userList.toString());
     }
 }

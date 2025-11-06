@@ -4,36 +4,52 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Scanner;
 
 public class Servidor {
 
-    private static List<ClientHandler> clients = new CopyOnWriteArrayList<>();
+    private static final List<ClientHandler> clients = new CopyOnWriteArrayList<>();
+    private static final int puertoDefault = 3030;
+    // puerto defecto por si no se ingresa nada
 
     public static void main(String[] args) {
-        final int puerto = 8080;
+
+        int puerto = puertoDefault;
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Introduce el puerto para iniciar el servidor (puerto default 3030): ");
+
+        try {
+            String input = scanner.nextLine();
+            
+            if (!input.trim().isEmpty()) {
+                puerto = Integer.parseInt(input);
+            } else {
+                System.out.println("No se ingresó puerto. Usando por defecto: " + puertoDefault);
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("Entrada inválida. Usando puerto por defecto: " + puertoDefault);
+        }
+        
+        scanner.close(); 
+
 
         try (ServerSocket serverSocket = new ServerSocket(puerto)) {
             System.out.println("Servidor de chat iniciado en el puerto " + puerto + "...");
 
-            // Bucle para aceptar múltiples clientes
+            // aceptar múltiples clientes
             while (true) {
-                // espera a que un cliente se conecte
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Nuevo cliente conectado: " + clientSocket.getInetAddress().getHostAddress());
 
-                // manejador para este cliente
                 ClientHandler clientHandler = new ClientHandler(clientSocket, clients);
-
-                // agrega el manejador a la lista de clientes
                 clients.add(clientHandler);
-
-                // Inicia el hilo de escucha a este cliente
                 new Thread(clientHandler).start();
             }
 
         } catch (IOException e) {
+            System.err.println("No se pudo iniciar el servidor en el puerto " + puerto);
             e.printStackTrace();
         }
     }
 }
-
