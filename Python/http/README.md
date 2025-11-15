@@ -1,5 +1,11 @@
 # 📝 README – Servidor HTTP en Python
+Bryan Arturo Moran Escalante
 
+Rafael Enrique Inurreta del Valle
+
+Kerin del Jesus Gonzalez Maas
+
+Kevin del Jesus Gonzalez Maas
 ## 📌 Descripción
 Servidor HTTP simple implementado con **sockets**, capaz de:
 - Procesar rutas (`/`, `/api/hora`, `/admin`)
